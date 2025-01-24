@@ -1,3 +1,5 @@
+import logging
+
 import click  # noqa: INP001
 import requests
 
@@ -10,7 +12,7 @@ def cli(ctx):
     ctx.obj["client"] = ResonantCliOAuthClient(
         "http://127.0.0.1:8000/oauth",
         "jUQhgOTQYiG6hmNSvaodOGJeriAqA1anqo8WFjCw",
-        ["identity"],
+        ["openid"],
     )
 
     ctx.obj["auth_headers"] = ctx.obj["client"].maybe_restore_login()
@@ -22,7 +24,7 @@ def login(ctx):
     if not ctx.obj["auth_headers"]:
         authorization_response = ctx.obj["client"].initialize_login_flow()
         click.echo(
-            f"visit the following url in a browser: {authorization_response.verification_uri}"
+            f"visit the following url in a browser: {authorization_response.verification_uri_complete}"
         )
         click.echo(f"user code: {authorization_response.user_code}")
 
@@ -55,4 +57,5 @@ def me(ctx):
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     cli(obj={})

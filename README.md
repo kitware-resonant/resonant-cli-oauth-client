@@ -25,7 +25,7 @@ using the OAuth2.0 Device Code Grant.
 
 * Call `login` when it's time to start a login flow:
   ```py
-  oauth_client.login()  # retrieve the url and code for the user to enter
+  oauth_client.initialize_login_flow()  # retrieve the url and code for the user to enter
   oauth_client.wait_for_completion()  # wait for the user to complete the login flow
   ```
 

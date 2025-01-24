@@ -37,12 +37,16 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "allauth",
+    "allauth.account",
+    "allauth.idp.oidc",
+
     "core",
-    "oauth2_provider",
 ]
 
 
 MIDDLEWARE = [
+
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -50,7 +54,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "oauth2_provider.middleware.OAuth2TokenMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "device_code_oauth_example.urls"
@@ -126,18 +130,4 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
-AUTHENTICATION_BACKENDS = [
-    "oauth2_provider.backends.OAuth2Backend",
-    "django.contrib.auth.backends.ModelBackend",
-]
-
-OAUTH2_PROVIDER = {
-    "OAUTH_DEVICE_VERIFICATION_URI": "http://127.0.0.1:8000/oauth/device/",
-    "OAUTH_DEVICE_VERIFICATION_URI_COMPLETE": lambda x: f"http://127.0.0.1:8000/oauth/device?user_code={x}",
-    "DEFAULT_SCOPES": ["identity"],
-    "SCOPES": {
-        "identity": "Identity",
-        "read": "Read",
-    },
-}
+IDP_OIDC_PRIVATE_KEY = (Path(__file__).parents[0] / 'private_key.pem').read_text()

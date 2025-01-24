@@ -1,8 +1,11 @@
 from dataclasses import dataclass, field
 import datetime
+from functools import cache
+import json
+import logging
 from pathlib import Path
 import time
-from typing import Literal
+from typing import Literal, Optional
 from urllib.parse import urlparse
 
 from dataclasses_json import dataclass_json
@@ -10,6 +13,17 @@ import requests
 from xdg import BaseDirectory
 
 AuthHeaders = dict
+
+logger = logging.getLogger(__name__)
+
+
+@dataclass_json
+@dataclass(frozen=True)
+class OpenIDConfig:
+    device_authorization_endpoint: str
+    token_endpoint: str
+    userinfo_endpoint: str
+    revocation_endpoint: str
 
 
 @dataclass_json
@@ -36,6 +50,35 @@ class AccessToken:
         return datetime.datetime.now(datetime.UTC) > self.issued_at + datetime.timedelta(
             seconds=self.expires_in
         )
+
+
+@dataclass_json
+@dataclass
+class AuthorizationResponse:
+    device_code: str
+    user_code: str
+    verification_uri: str
+    verification_uri_complete: str | None
+    expires_in: int
+    interval: int
+
+
+@dataclass
+class TokenResponseError:
+    error: Literal['expired_token', 'access_denied']
+
+
+class ResonantCliOAuthClient:
+    _token: AccessToken | None
+    _authorization_response: AuthorizationResponse | None
+
+    def __init__(self, oauth_url: str, client_id: str, scopes: Optional[list[str]] = None) -> None:
+        self.oauth_url = oauth_url.rstrip('/')
+        self.client_id = client_id
+        self._scopes = [] if not scopes else scopes
+        self._token = None
+        self._session = requests.Session()
+        self._authorization_response = None
 
 
 @dataclass_json
@@ -99,14 +142,37 @@ class ResonantCliOAuthClient:
         else:
             return None
 
+    @cache
+    def _get_openid_config(self) -> OpenIDConfig:
+        response = self._session.get(f'{self.oauth_url}/.well-known/openid-configuration')
+        response.raise_for_status()
+        return OpenIDConfig.from_json(response.text)
+
+    def _get_url(
+        self, type_: Literal['device_authorization', 'token', 'userinfo', 'revocation']
+    ) -> str:
+        openid_config = self._get_openid_config()
+
+        if type_ == 'device_authorization':
+            return openid_config.device_authorization_endpoint
+        elif type_ == 'token':
+            return openid_config.token_endpoint
+        elif type_ == 'userinfo':
+            return openid_config.userinfo_endpoint
+        elif type_ == 'revocation':
+            return openid_config.revocation_endpoint
+        else:
+            raise ValueError(f'invalid type: {type_}')
+
     def initialize_login_flow(self) -> AuthorizationResponse:
         response = self._session.post(
-            f"{self.oauth_url}/device-authorization/",
+            self._get_url('device_authorization'),
             data={
                 "client_id": self.client_id,
                 "scope": self.scope,
             },
         )
+        logger.debug(f'response: {response.text}')
 
         response.raise_for_status()
 
@@ -117,7 +183,7 @@ class ResonantCliOAuthClient:
             raise ValueError("no token to refresh")
 
         r = self._session.post(
-            f"{self.oauth_url}/token/",
+            self._get_url('token'),
             headers={
                 "Content-Type": "application/x-www-form-urlencoded",
             },
@@ -127,6 +193,9 @@ class ResonantCliOAuthClient:
                 "refresh_token": self._token.refresh_token,
             },
         )
+
+        logger.debug(f'response: {r.text}')
+
         if r.ok:
             self._token = AccessToken.from_json(r.text, infer_missing=True)
             self._save()
@@ -159,15 +228,13 @@ class ResonantCliOAuthClient:
 
         return self.auth_headers
 
-    def wait_for_completion(
-        self, authorization_response: AuthorizationResponse, max_wait: int = 300
-    ) -> AuthHeaders | TokenResponseError:  # type: ignore[return]
+    def wait_for_completion(self, authorization_response: AuthorizationResponse, max_wait: int = 300) -> AuthHeaders:
         slow_down_factor = 0
 
         start_time = time.time()
         while time.time() - start_time < max_wait:
             response = self._session.post(
-                f"{self.oauth_url}/token/",
+                self._get_url('token'),
                 headers={
                     "Content-Type": "application/x-www-form-urlencoded",
                 },
@@ -178,6 +245,8 @@ class ResonantCliOAuthClient:
                     "scope": self.scope,
                 },
             )
+
+            logger.debug(f'response: {response.text}')
 
             if response.status_code == 200:
                 self._token = AccessToken.from_json(response.text, infer_missing=True)
@@ -201,17 +270,18 @@ class ResonantCliOAuthClient:
 
             time.sleep(authorization_response.interval + (slow_down_factor * 5))
 
-        raise Exception("timed out waiting for token response")
+        raise Exception('timed out waiting for device code to be submitted')
 
     def logout(self) -> bool:
         if self._token:
             r = self._session.post(
-                f"{self.oauth_url}/revoke_token/",
+                self._get_url('revocation'),
                 data={
                     "token": self._token.access_token,
                     "client_id": self.client_id,
                 },
             )
+            logger.debug(f'response: {r.text}')
             if not r.ok:
                 return False
 
