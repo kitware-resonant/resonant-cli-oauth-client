@@ -9,7 +9,7 @@ from girder_cli_oauth_client import GirderCliOAuthClient
 def cli(ctx):
     ctx.obj['client'] = GirderCliOAuthClient(
         'http://127.0.0.1:8000/oauth',
-        'BqGiENNBN0cB0gSP5FcWUj5KHUP9NQswcHLXKvCX',
+        'jUQhgOTQYiG6hmNSvaodOGJeriAqA1anqo8WFjCw',
         ['identity'],
     )
 
@@ -20,10 +20,25 @@ def cli(ctx):
 @click.pass_context
 def login(ctx):
     if not ctx.obj['auth_headers']:
-        ctx.obj['client'].login()
-        click.echo('Success!')
+        authorization_response = ctx.obj['client'].initialize_login_flow()
+        click.echo(f'visit the following url in a browser: {authorization_response.verification_uri}')
+        click.echo(f'user code: {authorization_response.user_code}')
+
+        ctx.obj['client'].wait_for_completion(authorization_response)
+
+        click.echo('Success, try running "me" to see your user info.')
     else:
-        click.echo('Already logged in.')
+        click.echo('Already logged in, try running "me" to see your user info.')
+
+
+@cli.command()
+@click.pass_context
+def logout(ctx):
+    if ctx.obj['auth_headers']:
+        ctx.obj['client'].logout()
+        click.echo('Successfully logged out.')
+    else:
+        click.echo('Not currently logged in.')
 
 
 @cli.command()
@@ -32,7 +47,7 @@ def me(ctx):
     if not ctx.obj['auth_headers']:
         click.echo('Not logged in, try the "login" command.')
     else:
-        r = requests.get('http://127.0.0.1:8000/api/v2/users/me', headers=ctx.obj['auth_headers'])
+        r = requests.get('http://127.0.0.1:8000/me/', headers=ctx.obj['auth_headers'])
         r.raise_for_status()
         click.echo(f'hello {r.json()["email"]}!')
 
