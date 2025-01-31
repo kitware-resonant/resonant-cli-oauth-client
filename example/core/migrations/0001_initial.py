@@ -4,10 +4,10 @@ from django.db import migrations
 
 
 def create_device_code_oauth_application(apps, schema_editor):
-    Application = apps.get_model('oauth2_provider', 'Application')
+    Application = apps.get_model("oauth2_provider", "Application")
     Application.objects.create(
         client_id="jUQhgOTQYiG6hmNSvaodOGJeriAqA1anqo8WFjCw",
-        client_secret="test",
+        client_secret="test",  # noqa: S106
         name="example",
         redirect_uris="http://127.0.0.1:8000/",
         client_type="public",
@@ -17,7 +17,7 @@ def create_device_code_oauth_application(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('oauth2_provider', '0013_alter_application_authorization_grant_type_device'),
+        ("oauth2_provider", "0013_alter_application_authorization_grant_type_device"),
     ]
 
     operations = [
