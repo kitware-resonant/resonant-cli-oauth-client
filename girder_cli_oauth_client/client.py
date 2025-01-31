@@ -198,6 +198,8 @@ class GirderCliOAuthClient:
 
             time.sleep(authorization_response.interval + (slow_down_factor * 5))
 
+        raise Exception("timed out waiting for token response")
+
     def logout(self) -> bool:
         if self._token:
             r = self._session.post(f'{self.oauth_url}/revoke_token/',

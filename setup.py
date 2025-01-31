@@ -32,15 +32,19 @@ setup(
     python_requires='>=3.8',
     install_requires=[
         'authlib',
+        'dataclasses-json',
         'pyxdg',
     ],
     extras_require={
         'dev': [
             'ipython',
-            'tox',
-            # for the example
+            'tox'
+        ],
+        'example': [
             'click',
             'requests',
+            'django',
+            'django-oauth-toolkit @ git+https://github.com/duzumaki/django-oauth-toolkit@add-device-flow',
         ]
     },
     packages=find_packages(),
