@@ -14,14 +14,14 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
+from core.views import me
 from django.contrib import admin
 from django.urls import include, path
 from oauth2_provider import urls as oauth2_urls
 
-from core.views import me
-
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('oauth/', include(oauth2_urls)),
-    path('me/', me),
+    path("admin/", admin.site.urls),
+    path("oauth/", include(oauth2_urls)),
+    path("me/", me),
 ]

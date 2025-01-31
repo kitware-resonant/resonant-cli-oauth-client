@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-k7!d$w1g&8t&+vqo&*_2jhl2ywrq_tb!2d^)4$=w+p$a*ml+=s"
+SECRET_KEY = "django-insecure-k7!d$w1g&8t&+vqo&*_2jhl2ywrq_tb!2d^)4$=w+p$a*ml+=s"  # noqa: S105
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     "core",
     "oauth2_provider",
 ]
-
 
 
 MIDDLEWARE = [
@@ -136,12 +135,9 @@ AUTHENTICATION_BACKENDS = [
 OAUTH2_PROVIDER = {
     "OAUTH_DEVICE_VERIFICATION_URI": "http://127.0.0.1:8000/oauth/device/",
     "OAUTH_DEVICE_VERIFICATION_URI_COMPLETE": lambda x: f"http://127.0.0.1:8000/oauth/device?user_code={x}",
-    "DEFAULT_SCOPES": [
-        "identity"
-    ],
+    "DEFAULT_SCOPES": ["identity"],
     "SCOPES": {
         "identity": "Identity",
         "read": "Read",
     },
 }
-
