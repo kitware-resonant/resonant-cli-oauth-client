@@ -49,8 +49,13 @@ using the OAuth2.0 Device Code Grant.
 This repository comes bundled with an [example application](example/cli.py). Run it with:
 ```bash
 git clone https://github.com/girder/girder-cli-oauth-client.git
-pip install -e '.[dev]'
+pip install -e '.[example]'
 cd example
+./manage.py migrate
+./manage.py createsuperuser
+./manage.py runserver
+# log in to your account at http://127.0.0.1:8000/admin
+# in another tab
 python cli.py login
 python cli.py me
 ```
