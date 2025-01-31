@@ -4,7 +4,7 @@ A Python library for performing OAuth login to a Girder 4 (Django) server.
 
 ## Description
 This provides support for authenticating with Girder 4 servers,
-using the OAuth2.0 Authorization Code Grant with PKCE flow and out-of-band redirection.
+using the OAuth2.0 Device Code Grant.
 
 ## Usage
 * Install the library:
@@ -17,15 +17,16 @@ using the OAuth2.0 Authorization Code Grant with PKCE flow and out-of-band redir
   from girder_cli_oauth_client import GirderCliOAuthClient
 
   oauth_client = GirderCliOAuthClient(
-      'http://localhost:8000/oauth/',
-      '1ohsuyWIx9fEsJhmAH2AWGNUqd8Wsd7LHyongtVy',
+      'http://127.0.0.1:8000/oauth/',
+      'jUQhgOTQYiG6hmNSvaodOGJeriAqA1anqo8WFjCw',
       ['identity'],
   )
   ```
 
 * Call `login` when it's time to start a login flow:
   ```py
-  oauth_client.login()  # open the browser to login and wait for a code
+  oauth_client.login()  # retrieve the url and code for the user to enter
+  oauth_client.wait_for_completion()  # wait for the user to complete the login flow
   ```
 
 * At the start of *every* application start, unconditionally call `maybe_restore_login`, to attempt to
