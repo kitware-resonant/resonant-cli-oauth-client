@@ -54,7 +54,7 @@ class TokenResponseError:
     error: Literal["expired_token", "access_denied"]
 
 
-class GirderCliOAuthClient:
+class ResonantCliOAuthClient:
     _token: AccessToken | None
     _authorization_response: AuthorizationResponse | None
 
@@ -70,7 +70,7 @@ class GirderCliOAuthClient:
     def _data_path(self) -> Path:
         hostname = urlparse(self.oauth_url).hostname
         assert hostname  # noqa: S101
-        namespace = Path("girder_cli_oauth_client") / Path(hostname) / Path(self.client_id)
+        namespace = Path("resonant_cli_oauth_client") / Path(hostname) / Path(self.client_id)
         return Path(BaseDirectory.save_data_path(namespace))
 
     @property

@@ -2,8 +2,8 @@ from contextlib import suppress
 from importlib.metadata import PackageNotFoundError, version
 
 with suppress(PackageNotFoundError):
-    __version__ = version("girder-cli-oauth-client")
+    __version__ = version("resonant-cli-oauth-client")
 
-from .client import GirderCliOAuthClient
+from .client import ResonantCliOAuthClient
 
-__all__ = ["GirderCliOAuthClient"]
+__all__ = ["ResonantCliOAuthClient"]
