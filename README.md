@@ -1,22 +1,22 @@
-# girder-cli-oauth-client
+# resonant-cli-oauth-client
 
-A Python library for performing OAuth login to a Girder 4 (Django) server.
+A Python library for performing OAuth login to a Resonant server.
 
 ## Description
-This provides support for authenticating with Girder 4 servers,
+This provides support for authenticating with Resonant servers
 using the OAuth2.0 Device Code Grant.
 
 ## Usage
 * Install the library:
   ```bash
-  pip install girder-cli-oauth-client
+  pip install resonant-cli-oauth-client
   ```
 
 * Instantiate an `OauthClient` with your application-specific configuration:
   ```py
-  from girder_cli_oauth_client import GirderCliOAuthClient
+  from resonant_cli_oauth_client import ResonantCliOAuthClient
 
-  oauth_client = GirderCliOAuthClient(
+  oauth_client = ResonantCliOAuthClient(
       'http://127.0.0.1:8000/oauth/',
       'jUQhgOTQYiG6hmNSvaodOGJeriAqA1anqo8WFjCw',
       ['identity'],
@@ -48,7 +48,7 @@ using the OAuth2.0 Device Code Grant.
 ## Example app
 This repository comes bundled with an [example application](example/cli.py). Run it with:
 ```bash
-git clone https://github.com/girder/girder-cli-oauth-client.git
+git clone https://github.com/kitware-resonant/resonant-cli-oauth-client.git
 pip install -e '.[example]'
 cd example
 ./manage.py migrate

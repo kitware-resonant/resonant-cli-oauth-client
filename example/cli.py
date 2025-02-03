@@ -1,13 +1,13 @@
 import click  # noqa: INP001
 import requests
 
-from girder_cli_oauth_client import GirderCliOAuthClient
+from resonant_cli_oauth_client import ResonantCliOAuthClient
 
 
 @click.group()
 @click.pass_context
 def cli(ctx):
-    ctx.obj["client"] = GirderCliOAuthClient(
+    ctx.obj["client"] = ResonantCliOAuthClient(
         "http://127.0.0.1:8000/oauth",
         "jUQhgOTQYiG6hmNSvaodOGJeriAqA1anqo8WFjCw",
         ["identity"],

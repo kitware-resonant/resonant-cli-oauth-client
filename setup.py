@@ -7,15 +7,15 @@ with readme_file.open() as f:
     long_description = f.read()
 
 setup(
-    name="girder-cli-oauth-client",
-    description="A Python library for performing OAuth login to a Girder 4 (Django) server.",
+    name="resonant-cli-oauth-client",
+    description="A Python library for performing OAuth login to a Resonant server.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     license="Apache 2.0",
-    url="https://github.com/girder/girder-cli-oauth-client",
+    url="https://github.com/kitware-resonant/resonant-cli-oauth-client",
     project_urls={
-        "Bug Reports": "https://github.com/girder/girder-cli-oauth-client/issues",
-        "Source": "https://github.com/girder/girder-cli-oauth-client",
+        "Bug Reports": "https://github.com/kitware-resonant/resonant-cli-oauth-client/issues",
+        "Source": "https://github.com/kitware-resonant/resonant-cli-oauth-client",
     },
     author="Kitware, Inc.",
     author_email="kitware@kitware.com",
