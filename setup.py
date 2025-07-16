@@ -41,7 +41,7 @@ setup(
             "click",
             "requests",
             "django",
-            "django-oauth-toolkit @ git+https://github.com/duzumaki/django-oauth-toolkit@add-device-flow",
+            "django-allauth[idp-oidc]>=65.10.0",
         ],
     },
     packages=find_packages(),

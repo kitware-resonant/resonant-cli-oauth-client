@@ -18,10 +18,10 @@ Including another URLconf
 from core.views import me
 from django.contrib import admin
 from django.urls import include, path
-from oauth2_provider import urls as oauth2_urls
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("oauth/", include(oauth2_urls)),
+    path("accounts/", include("allauth.urls")),
+    path("oauth/", include("allauth.idp.urls")),
     path("me/", me),
 ]

@@ -3,23 +3,27 @@
 from django.db import migrations
 
 
-def create_device_code_oauth_application(apps, schema_editor):
-    Application = apps.get_model("oauth2_provider", "Application")
-    Application.objects.create(
-        client_id="jUQhgOTQYiG6hmNSvaodOGJeriAqA1anqo8WFjCw",
-        client_secret="test",  # noqa: S106
-        name="example",
+def create_device_code_oauth_client(apps, schema_editor):
+    Client = apps.get_model("allauth_idp_oidc", "Client")
+    Client.objects.create(
+        name="resonant-cli-oauth-client-example",
+        id="jUQhgOTQYiG6hmNSvaodOGJeriAqA1anqo8WFjCw",
+        scopes="openid",
+        type="public",
+        grant_types="urn:ietf:params:oauth:grant-type:device_code",
         redirect_uris="http://127.0.0.1:8000/",
-        client_type="public",
-        authorization_grant_type="urn:ietf:params:oauth:grant-type:device_code",
+        response_types="code",
+        skip_consent=False,
     )
+
+
 
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("oauth2_provider", "0013_alter_application_authorization_grant_type_device"),
+        ("allauth_idp_oidc", "0001_initial"),
     ]
 
     operations = [
-        migrations.RunPython(create_device_code_oauth_application),
+        migrations.RunPython(create_device_code_oauth_client),
     ]
