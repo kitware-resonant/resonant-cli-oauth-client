@@ -1,8 +1,7 @@
-from django.http import JsonResponse
-
 from allauth.idp.oidc.internal.oauthlib.server import get_server
 from allauth.idp.oidc.internal.oauthlib.utils import extract_params
 from allauth.idp.oidc.internal.scope import is_scope_granted
+from django.http import JsonResponse
 
 
 def me(request):
@@ -15,7 +14,7 @@ def me(request):
     if not valid:
         return JsonResponse({"detail": "Forbidden"}, status=403)
 
-    if not is_scope_granted('openid', ctx.access_token, request.method):
+    if not is_scope_granted("openid", ctx.access_token, request.method):
         return JsonResponse({"detail": "Forbidden"}, status=403)
 
     if access_token := ctx.access_token:

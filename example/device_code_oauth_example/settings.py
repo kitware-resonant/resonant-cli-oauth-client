@@ -40,13 +40,11 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "allauth.idp.oidc",
-
     "core",
 ]
 
 
 MIDDLEWARE = [
-
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -130,4 +128,4 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-IDP_OIDC_PRIVATE_KEY = (Path(__file__).parents[0] / 'private_key.pem').read_text()
+IDP_OIDC_PRIVATE_KEY = (Path(__file__).parents[0] / "private_key.pem").read_text()
