@@ -65,35 +65,6 @@ class AuthorizationResponse:
 
 @dataclass
 class TokenResponseError:
-    error: Literal['expired_token', 'access_denied']
-
-
-class ResonantCliOAuthClient:
-    _token: AccessToken | None
-    _authorization_response: AuthorizationResponse | None
-
-    def __init__(self, oauth_url: str, client_id: str, scopes: Optional[list[str]] = None) -> None:
-        self.oauth_url = oauth_url.rstrip('/')
-        self.client_id = client_id
-        self._scopes = [] if not scopes else scopes
-        self._token = None
-        self._session = requests.Session()
-        self._authorization_response = None
-
-
-@dataclass_json
-@dataclass
-class AuthorizationResponse:
-    device_code: str
-    user_code: str
-    verification_uri: str
-    verification_uri_complete: str | None
-    expires_in: int
-    interval: int
-
-
-@dataclass
-class TokenResponseError:
     error: Literal["expired_token", "access_denied"]
 
 
