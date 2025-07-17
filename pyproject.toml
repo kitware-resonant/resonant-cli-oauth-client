@@ -1,13 +1,94 @@
 [build-system]
-requires = ["setuptools >= 42", "wheel", "setuptools-scm[toml]>=3.4"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
 
-[tool.setuptools_scm]
+[project]
+name = "resonant-cli-oauth-client"
+description = "A Python library for performing OAuth login to a Resonant server."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+maintainers = [{name = "Kitware, Inc.", email = "kitware@kitware.com"}]
+keywords=[
+  "resonant",
+  "kitware-resonant",
+  "oauth",
+  "oauth2",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Web Environment",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python",
+]
+dependencies = [
+  "authlib",
+  "dataclasses-json",
+  "pyxdg",
+]
+dynamic = ["version"]
+
+[project.urls]
+Repository = "https://github.com/kitware-resonant/resonant-cli-oauth-client"
+"Bug Reports" = "https://github.com/kitware-resonant/resonant-cli-oauth-client/issues"
+
+[dependency-groups]
+dev = [
+  "click",
+  "django",
+  "django-allauth[idp-oidc]",
+  "requests",
+  "tox",
+  "tox-uv",
+]
+lint = [
+  "ruff",
+]
+format = [
+  "ruff",
+]
+type = [
+  "mypy",
+  "django-stubs[compatible-mypy]",
+  "types-pyxdg",
+  "types-requests",
+]
+
+[tool.hatch.build]
+only-include = [
+  "resonant_cli_oauth_client",
+]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.mypy]
+files = [
+  "resonant_cli_oauth_client",
+  "example",
+]
+check_untyped_defs = true
+show_error_codes = true
+strict = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = [
+  "allauth.*",
+]
+ignore_missing_imports = true
 
 [tool.ruff]
 line-length = 100
-target-version = "py312"
-extend-exclude = ["typings"]
 
 [tool.ruff.lint]
 select = ["ALL"]
@@ -55,36 +136,9 @@ ignore = [
   "A002", # shadowing builtins, we do this a lot with id for endpoints
 ]
 
-[tool.ruff.lint.per-file-ignores]
-"isic/settings.py" = [
-  "FBT003", # boolean positional value
-]
-"scripts/**" = [
-  "INP001", # File is part of an implicit namespace package
-]
-"**/migrations/**" = [
-  "N806", # Variable in function should be lowercase
-  "RUF012", # Mutable class attributes should be annotated with `typing.ClassVar`
-]
-"**/management/commands/**" = [
-  "INP001", # File is part of an implicit namespace package
-]
-
-[tool.ruff.format]
-quote-style = "double"
-
-[tool.ruff.lint.flake8-self]
-extend-ignore-names = ["_base_manager", "_default_manager",  "_meta"]
-
 [tool.ruff.lint.isort]
 # Sort by name, don't cluster "from" vs "import"
 force-sort-within-sections = true
 
 [tool.ruff.lint.pydocstyle]
 convention = "pep257"
-
-[tool.mypy]
-disable_error_code = "var-annotated,return"
-ignore_missing_imports = true
-warn_unused_configs = true
-check_untyped_defs = true
