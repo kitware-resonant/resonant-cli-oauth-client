@@ -1,6 +1,6 @@
 import logging
 
-import click  # noqa: INP001
+import click
 import requests
 
 from resonant_cli_oauth_client import ResonantCliOAuthClient

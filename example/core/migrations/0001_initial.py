@@ -17,8 +17,6 @@ def create_device_code_oauth_client(apps, schema_editor):
     )
 
 
-
-
 class Migration(migrations.Migration):
     dependencies = [
         ("allauth_idp_oidc", "0001_initial"),
